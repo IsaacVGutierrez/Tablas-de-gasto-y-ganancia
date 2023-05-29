@@ -1,39 +1,94 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Tabla de Productos</title>
+
+  <title>Tabla de Productos y Datos del Negocio</title>
   <style>
+    body {
+      background-color: #f2e8c9;
+      /* Color ocre claro */
+    }
+
+    /* Estilos de la tabla de productos */
     table {
       border-collapse: collapse;
       width: 100%;
     }
-    
-    th, td {
+
+    th,
+    td {
       border: 1px solid black;
       padding: 8px;
       text-align: center;
     }
-    
+
     th {
       background-color: lightgray;
     }
-    
+
     tr:last-child {
       font-weight: bold;
     }
-    
-    input[type="text"] {
+
+    /* Estilos de los datos del negocio */
+    .container {
+      width: 500px;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #business-data {
+      margin-top: 20px;
+    }
+
+    #business-data img {
+      max-width: 200px;
+      margin-top: 10px;
+    }
+
+    /* Estilos del formulario de carga de datos */
+    .form-container {
+      margin-top: 20px;
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="file"] {
+      display: block;
+      margin-bottom: 10px;
       width: 100%;
     }
-    
-    /* Agrega espacio entre la tabla y la sección de carga de datos */
-    #table-container {
-      margin-bottom: 20px;
+
+    .form-container button {
+      margin-top: 10px;
     }
   </style>
 </head>
+
 <body>
-  <div id="table-container">
+  <div class="container">
+    <h2>Datos del Negocio</h2>
+    <div id="business-data" class="hidden">
+      <h3 id="owner-heading"></h3>
+      <p id="address-paragraph"></p>
+      <p id="phone-paragraph"></p>
+      <img id="business-photo" src="" alt="Foto del negocio">
+    </div>
+
+    <form id="business-form" class="form-container">
+      <h3>Ingrese los datos de su negocio:</h3>
+      <input type="text" id="input-owner" placeholder="Dueño" required>
+      <input type="text" id="input-address" placeholder="Dirección" required>
+      <input type="text" id="input-phone" placeholder="Teléfono" required>
+      <input type="file" id="input-photo" accept="image/*" required>
+      <button type="submit">Guardar mi negocio</button>
+    </form>
+
+    <h2>Tabla de Productos</h2>
     <table>
       <thead>
         <tr>
@@ -51,25 +106,124 @@
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="3">Gasto Total</td>
+          <td colspan="3">Total Gasto</td>
           <td id="total-gasto" colspan="1">0</td>
           <td colspan="2">Ganancia Total</td>
           <td id="total-ganancia-subtotal" colspan="1">0</td>
         </tr>
       </tfoot>
     </table>
+
+    <div class="form-container">
+      <input type="text" id="input-nombre" placeholder="Nombre Producto" required>
+      <input type="text" id="input-precio-compra" placeholder="Precio Compra" required>
+      <input type="text" id="input-unidades" placeholder="Unidades" required>
+      <input type="text" id="input-precio-venta" placeholder="Precio Venta" required>
+      <button onclick="agregarFila()">Agregar Producto</button>
+    </div>
   </div>
-  
-  <div>
-    <input type="text" id="input-nombre" placeholder="Nombre Producto" required>
-    <input type="text" id="input-precio-compra" placeholder="Precio Compra" required>
-    <input type="text" id="input-unidades" placeholder="Unidades" required>
-    <input type="text" id="input-precio-venta" placeholder="Precio Venta" required>
-    <button onclick="agregarFila()">Agregar Producto</button>
-  </div>
-  
+
   <script>
-    // Código JavaScript aquí...
+    const businessForm = document.getElementById("business-form");
+    const businessDataDiv = document.getElementById("business-data");
+    const ownerHeading = document.getElementById("owner-heading");
+    const addressParagraph = document.getElementById("address-paragraph");
+    const phoneParagraph = document.getElementById("phone-paragraph");
+    const businessPhoto = document.getElementById("business-photo");
+
+    // Ocultar el formulario de carga de datos del negocio
+    function hideBusinessForm() {
+      businessForm.classList.add("hidden");
+    }
+
+    // Mostrar los datos del negocio
+    function showBusinessData() {
+      businessDataDiv.classList.remove("hidden");
+
+      const owner = document.getElementById("input-owner").value;
+      const address = document.getElementById("input-address").value;
+      const phone = document.getElementById("input-phone").value;
+      const photo = document.getElementById("input-photo").files[0];
+
+      ownerHeading.textContent = "Dueño: " + owner;
+      addressParagraph.textContent = "Dirección: " + address;
+      phoneParagraph.textContent = "Teléfono: " + phone;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        businessPhoto.src = e.target.result;
+      };
+      reader.readAsDataURL(photo);
+    }
+
+    // Evento de envío del formulario de negocio
+    businessForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      hideBusinessForm();
+      showBusinessData();
+    });
+
+    // Agregar fila a la tabla de productos
+    function agregarFila() {
+      // Obtener referencias a los elementos del DOM
+      const nombre = document.getElementById("input-nombre").value;
+      const precioCompra = document.getElementById("input-precio-compra").value;
+      const unidades = document.getElementById("input-unidades").value;
+      const precioVenta = document.getElementById("input-precio-venta").value;
+
+      // Validar que se hayan ingresado todos los datos
+      if (!nombre || !precioCompra || !unidades || !precioVenta) {
+        alert("Por favor, complete todos los campos");
+        return;
+      }
+
+      // Calcular subtotal y ganancia subtotal
+      const subtotal = precioCompra * unidades;
+      const gananciaUnidad = precioVenta - precioCompra;
+      const gananciaSubtotal = gananciaUnidad * unidades;
+
+      // Crear la fila y agregarla a la tabla
+      const tableBody = document.getElementById("table-body");
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${nombre}</td>
+        <td>${precioCompra}</td>
+        <td>${unidades}</td>
+        <td>${subtotal}</td>
+        <td>${precioVenta}</td>
+        <td>${gananciaUnidad}</td>
+        <td>${gananciaSubtotal}</td>
+      `;
+      tableBody.appendChild(row);
+
+      // Actualizar los totales
+      actualizarTotales();
+
+      // Limpiar los campos de entrada
+      document.getElementById("input-nombre").value = "";
+      document.getElementById("input-precio-compra").value = "";
+      document.getElementById("input-unidades").value = "";
+      document.getElementById("input-precio-venta").value = "";
+    }
+
+    // Actualizar los totales
+    function actualizarTotales() {
+      const filas = document.querySelectorAll("#table-body tr");
+      let gastoTotal = 0;
+      let gananciaTotalSubtotal = 0;
+
+      filas.forEach(fila => {
+        const subtotal = parseInt(fila.cells[3].textContent);
+        const gananciaSubtotal = parseInt(fila.cells[6].textContent);
+
+        gastoTotal += subtotal;
+        gananciaTotalSubtotal += gananciaSubtotal;
+      });
+
+      document.getElementById("total-gasto").textContent = gastoTotal;
+      document.getElementById("total-ganancia-subtotal").textContent = gananciaTotalSubtotal;
+    }
   </script>
 </body>
+
 </html>
