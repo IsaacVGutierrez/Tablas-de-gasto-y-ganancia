@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tabla de Productos</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+    
+    th {
+      background-color: lightgray;
+    }
+    
+    tr:last-child {
+      font-weight: bold;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+    }
+    
+    /* Agrega espacio entre la tabla y la sección de carga de datos */
+    #table-container {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre Producto</th>
+          <th>Precio Compra</th>
+          <th>Unidades</th>
+          <th>Subtotal</th>
+          <th>Precio Venta</th>
+          <th>Ganancia Unidad</th>
+          <th>Ganancia Subtotal</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- Aquí se agregarán las filas dinámicamente -->
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">Gasto Total</td>
+          <td id="total-gasto" colspan="1">0</td>
+          <td colspan="2">Ganancia Total</td>
+          <td id="total-ganancia-subtotal" colspan="1">0</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  
+  <div>
+    <input type="text" id="input-nombre" placeholder="Nombre Producto" required>
+    <input type="text" id="input-precio-compra" placeholder="Precio Compra" required>
+    <input type="text" id="input-unidades" placeholder="Unidades" required>
+    <input type="text" id="input-precio-venta" placeholder="Precio Venta" required>
+    <button onclick="agregarFila()">Agregar Producto</button>
+  </div>
+  
+  <script>
+    // Código JavaScript aquí...
+  </script>
+</body>
+</html>
